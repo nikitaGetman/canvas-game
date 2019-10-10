@@ -45,8 +45,8 @@ const background = new GameObject(
   }
 );
 
-game.addSprite(background);
-game.addSprite(player);
+game.addSprite(background, 5);
+game.addSprite(player, 5);
 
 // setInterval(handleInput, 1000 / 30);
 

@@ -90,11 +90,20 @@ class Core {
   }
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.objectsToDraw.forEach(el => el.draw(this.ctx));
+    this.objectsToDraw.forEach(el => el.object.draw(this.ctx));
   }
 
-  addSprite(gameObj) {
-    this.objectsToDraw.push(gameObj);
+  addSprite(gameObj, zIndex = 0) {
+    const newObj = { object: gameObj, zIndex };
+
+    for (let i = 0; i < this.objectsToDraw.length; i++) {
+      if (zIndex < this.objectsToDraw[i].zIndex) {
+        this.objectsToDraw.splice(i, 0, newObj);
+        return;
+      }
+    }
+
+    this.objectsToDraw.push(newObj);
   }
   addObject() {}
 }
