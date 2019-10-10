@@ -1,4 +1,4 @@
-class Sprite {
+class GameObject {
   constructor(
     posX,
     posY,
@@ -23,17 +23,8 @@ class Sprite {
   }
 
   setVelocity(vx, vy) {
-    console.log("setted verlocity");
-    console.log(vx);
-    console.log(vy);
     this.vx = vx;
     this.vy = vy;
-  }
-  physic() {
-    // console.log("moving from: " + this.posX + " - " + this.posY);
-    // console.log("on: " + this.vx + " - " + this.vy);
-    this.posX += this.vx;
-    this.posY += this.vy;
   }
   draw(ctx) {
     if (this.customDrawFunction) {
@@ -55,19 +46,20 @@ class Sprite {
   }
 }
 
+let frames = 0;
+let timer = Date.now();
+
 class Core {
   constructor(id, width, height) {
     const canvas = document.getElementById(id);
-    this.ctx = canvas.getContext("2d");
-
     canvas.width = width;
     canvas.height = height;
 
+    this.ctx = canvas.getContext("2d");
     this.width = width;
     this.height = height;
 
-    this.elementsToDraw = [];
-    this.elementsToPhysic = [];
+    this.objectsToDraw = [];
 
     this.timerId = null;
   }
@@ -75,7 +67,13 @@ class Core {
   start() {
     const self = this;
     this.timerId = setInterval(function() {
+      if (Date.now() - timer > 1000) {
+        console.log(frames);
+        timer = Date.now();
+        frames = 0;
+      }
       self.update();
+      frames++;
     }, 1000 / 30); // 30 fps
   }
   stop() {
@@ -88,47 +86,17 @@ class Core {
     this.draw();
   }
   physicsUpdate() {
-    this.elementsToPhysic.forEach(el => el.physic());
+    //   this.elementsToPhysic.forEach(el => this.calculatePhysic());
   }
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
+    this.objectsToDraw.forEach(el => el.draw(this.ctx));
+  }
 
-    this.drawBackground();
-    this.drawObjects();
+  addSprite(gameObj) {
+    this.objectsToDraw.push(gameObj);
   }
-  drawBackground() {
-    const offset = 8;
-
-    roundedFilledRect(
-      this.ctx,
-      offset,
-      offset,
-      this.width - offset * 2,
-      this.height - offset * 2,
-      15,
-      "#1A237E"
-    );
-
-    roundedRect(
-      this.ctx,
-      offset,
-      offset,
-      this.width - offset * 2,
-      this.height - offset * 2,
-      15,
-      "#212121",
-      offset
-    );
-  }
-  drawObjects() {
-    this.elementsToDraw.forEach(el => el.draw(this.ctx));
-  }
-  addSprite(sprite) {
-    this.elementsToDraw.push(sprite);
-    if (sprite.isCollisionEnabled || sprite.isPhysicEnabled) {
-      this.elementsToPhysic.push(sprite);
-    }
-  }
+  addObject() {}
 }
 
 function roundedFilledRect(ctx, x, y, width, height, radius, color) {
@@ -172,9 +140,4 @@ function roundedRect(
   ctx.arcTo(x, y, x, y + radius, radius);
   ctx.strokeStyle = color;
   ctx.stroke();
-}
-function initWebGL(canvas) {
-  gl = null;
-
-  return gl;
 }
