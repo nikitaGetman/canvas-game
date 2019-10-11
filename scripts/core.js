@@ -46,13 +46,14 @@ class Core {
   }
 
   start() {
-    // const self = this;
     this.timerId = setInterval(() => {
-      if (Date.now() - self.timer > 1000) {
-        this.fps = self.frameCounter;
-        this.timer = Date.now();
+      const now = Date.now();
+      if (now - this.timer > 1000) {
+        this.fps = this.frameCounter;
+        this.timer = now;
         this.frameCounter = 0;
       }
+
       this.update();
       this.frameCounter++;
     }, 1000 / 60); // 60 fps
