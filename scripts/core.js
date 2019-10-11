@@ -8,6 +8,23 @@ class GameObject {
     console.log("update from GameObject");
   }
 }
+class Circle extends GameObject {
+  constructor(x, y, radius, color) {
+    super(x, y);
+
+    this.radius = radius;
+    this.color = color;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+
+  update() {}
+}
 
 class Core {
   constructor(id, width, height) {
@@ -22,24 +39,23 @@ class Core {
     this.objectsToDraw = [];
     this.objectsToPhysicUpdate = [];
 
-    this.frames = 0;
+    this.frameCounter = 0;
     this.timer = Date.now();
     this.timerId = null;
-
-    this.fpsIndicator = document.getElementById("fps") || {};
+    this.fps = 0;
   }
 
   start() {
-    const self = this;
-    this.timerId = setInterval(function() {
+    // const self = this;
+    this.timerId = setInterval(() => {
       if (Date.now() - self.timer > 1000) {
-        self.fpsIndicator.innerText = self.frames;
-        self.timer = Date.now();
-        self.frames = 0;
+        this.fps = self.frameCounter;
+        this.timer = Date.now();
+        this.frameCounter = 0;
       }
-      self.update();
-      self.frames++;
-    }, 1000 / 30); // 30 fps
+      this.update();
+      this.frameCounter++;
+    }, 1000 / 60); // 60 fps
   }
   stop() {
     clearInterval(this.timerId);
@@ -49,6 +65,10 @@ class Core {
   update() {
     this.physicsUpdate();
     this.draw();
+
+    this.ctx.font = "32px sans-serif";
+    this.ctx.fillStyle = "#333";
+    this.ctx.fillText(this.fps, 10, 30);
   }
   physicsUpdate() {
     this.objectsToPhysicUpdate.forEach(el => el.update());
@@ -73,5 +93,24 @@ class Core {
   addObject(gameObj, zIndex = 0) {
     this.addSprite(gameObj, zIndex);
     this.objectsToPhysicUpdate.push(gameObj);
+  }
+
+  // TODO: rewrite on correct Array methods
+  removeObject(gameObj) {
+    // console.log(gameObj);
+    // this.stop();
+    // let id = this.objectsToPhysicUpdate.indexOf(gameObj);
+    // console.log("ID for deletion " + id);
+    // this.objectsToPhysicUpdate.splice(id, 0);
+
+    this.objectsToPhysicUpdate = this.objectsToPhysicUpdate.filter(
+      el => el !== gameObj
+    );
+
+    this.objectsToDraw = this.objectsToDraw.filter(el => el.object !== gameObj);
+
+    // const _obj = this.objectsToDraw.filter(el => el.object === gameObj);
+    // id = this.objectsToDraw.indexOf(_obj);
+    // this.objectsToDraw, splice(id, 0);
   }
 }
