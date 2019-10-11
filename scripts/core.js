@@ -1,53 +1,17 @@
 class GameObject {
-  constructor(
-    posX,
-    posY,
-    width,
-    height,
-    enableCollisions = false,
-    enablePhysic = false,
-    drFunc = null
-  ) {
-    this.posX = posX;
-    this.posY = posY;
-
-    this.width = width;
-    this.height = height;
-
-    this.isCollisionEnabled = enableCollisions;
-    this.isPhysicEnabled = enablePhysic;
-    this.vx = 0;
-    this.vy = 0;
-
-    this.customDrawFunction = drFunc;
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
   }
-
-  setVelocity(vx, vy) {
-    this.vx = vx;
-    this.vy = vy;
-  }
-  draw(ctx) {
-    if (this.customDrawFunction) {
-      this.customDrawFunction(this, ctx);
-    } else {
-      roundedFilledRect(
-        ctx,
-        this.posX,
-        this.posY,
-        this.width,
-        this.height,
-        4,
-        "red"
-      );
-    }
-  }
-  setDrawFunction(dr) {
-    this.customDrawFunction = dr;
+  draw(ctx) {}
+  update() {
+    console.log("update from GameObject");
   }
 }
 
 let frames = 0;
 let timer = Date.now();
+const fps = document.getElementById("fps");
 
 class Core {
   constructor(id, width, height) {
@@ -60,6 +24,7 @@ class Core {
     this.height = height;
 
     this.objectsToDraw = [];
+    this.objectsToPhysic = [];
 
     this.timerId = null;
   }
@@ -68,7 +33,7 @@ class Core {
     const self = this;
     this.timerId = setInterval(function() {
       if (Date.now() - timer > 1000) {
-        console.log(frames);
+        fps.innerText = frames;
         timer = Date.now();
         frames = 0;
       }
@@ -86,7 +51,7 @@ class Core {
     this.draw();
   }
   physicsUpdate() {
-    //   this.elementsToPhysic.forEach(el => this.calculatePhysic());
+    this.objectsToPhysic.forEach(el => el.update());
   }
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
@@ -105,7 +70,10 @@ class Core {
 
     this.objectsToDraw.push(newObj);
   }
-  addObject() {}
+  addObject(gameObj, zIndex = 0) {
+    this.addSprite(gameObj, zIndex);
+    this.objectsToPhysic.push(gameObj);
+  }
 }
 
 function roundedFilledRect(ctx, x, y, width, height, radius, color) {
