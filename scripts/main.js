@@ -17,7 +17,7 @@ document.onmousemove = function(e) {
 };
 
 class Circle extends GameObject {
-  constructor(x, y, radius, color) {
+  constructor(x, y, radius, color, mass) {
     super(x, y);
 
     this.radius = radius;
@@ -28,7 +28,7 @@ class Circle extends GameObject {
       x: (Math.random() - 0.5) * 5,
       y: (Math.random() - 0.5) * 5
     };
-    this.mass = 1;
+    this.mass = mass;
   }
 
   draw(ctx) {
@@ -91,7 +91,7 @@ for (let i = 0; i < 50; i++) {
     }
   }
 
-  const newCircle = new Circle(x, y, radius, "#660066");
+  const newCircle = new Circle(x, y, radius, "#660066", 1);
 
   circles.push(newCircle);
   game.addObject(newCircle);
