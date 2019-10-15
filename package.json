@@ -1,0 +1,23 @@
+{
+  "name": "canvas-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikitaGetman/canvas-game.git"
+  },
+  "author": "Nikita Getman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikitaGetman/canvas-game/issues"
+  },
+  "homepage": "https://github.com/nikitaGetman/canvas-game#readme",
+  "devDependencies": {
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9"
+  }
+}

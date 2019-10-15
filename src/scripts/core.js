@@ -115,3 +115,5 @@ class Core {
     // this.objectsToDraw, splice(id, 0);
   }
 }
+
+export { GameObject, Core, Circle };
